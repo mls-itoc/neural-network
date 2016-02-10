@@ -20,21 +20,28 @@ def get_request(search_query: '美女', start_index: 1)
 end
 
 def download_image(url)
+  url = url.gsub(/(\?.+)/, "")
   file_name = File.basename(url)
-  file_path = Dir.pwd + "/images/" + file_name
+  return nil unless file_name.downcase.match(/\.png|\.jpg|\.jpeg/)
+  file_path = Dir.pwd + "/bijin_images/" + file_name
   open(file_path, 'wb') do |output|
-    open(url) { |data| output.write(data.read) }
+    begin
+      open(url) { |data| output.write(data.read) }
+    rescue => e
+      puts e.class
+    end
   end
 end
 
 count = 0
 start_index = 1
 
-# とりあえず 10 * 10 枚ダウンロードする
+# とりあえず5000枚ダウンロードする
+max_count = 5000
 loop do
   puts "start count: #{count}"
 
-  break if count == 10 || !start_index
+  break if count == max_count || !start_index
 
   puts "start get_request"
   res = get_request(start_index: start_index)
